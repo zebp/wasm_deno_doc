@@ -16,3 +16,6 @@ scripts:
 
   dev:
     cmd: deno run --allow-read mod.ts
+
+  test:
+    cmd: deno test --allow-read

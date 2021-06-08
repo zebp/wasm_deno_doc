@@ -19,7 +19,7 @@ export interface DocNodeShared {
   name: string;
   scope?: string[];
   location: DocNodeLocation;
-  jsDoc?: string;
+  jsDoc: string | null;
 }
 
 export interface TsTypeParamDef {
@@ -293,6 +293,7 @@ export interface FunctionDef {
   returnType?: TsTypeDef;
   isAsync: boolean;
   isGenerator: boolean;
+  typeParams: TsTypeParamDef[];
 }
 
 export interface VariableDef {
