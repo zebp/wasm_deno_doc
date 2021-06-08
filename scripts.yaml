@@ -1,0 +1,18 @@
+scripts:
+  # We need a custom bindgen because currently wasm-bindgen's deno target doesn't work with http
+  # imports.
+  install-wasm-bindgen:
+    cmd: cargo install --git https://github.com/zebp/wasm-bindgen wasm-bindgen-cli
+    env:
+      CARGO_INSTALL_ROOT: ./dev-bin
+
+  build-wasm:
+    - cmd: cargo build --target wasm32-unknown-unknown
+      desc: Build the wasm binary
+
+      # Use the custom wasm-bindgen to allow for http imports.
+    - cmd: ./dev-bin/bin/wasm-bindgen --no-typescript --target deno --out-dir pkg target/wasm32-unknown-unknown/debug/bridge.wasm
+      desc: Generate TypeScript bindings
+
+  dev:
+    cmd: deno run --allow-read mod.ts
