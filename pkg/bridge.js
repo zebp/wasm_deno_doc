@@ -365,25 +365,20 @@ const imports = {
 
 };
 
-const url = new URL(import.meta.url)
-
-let wasmCode = ''
-if (url.protocol.includes('file')) {
-    let file = new URL(import.meta.url).pathname;
-    if (Deno.build.os === 'windows') {
-        if (file.startsWith('/')) file = file.substr(1)
-        file = Deno.realPathSync(file + '/../bridge_bg.wasm')
-    } else {
-        file = file.substring(0, file.lastIndexOf('/') + 1) + 'bridge_bg.wasm'
-    }
-    wasmCode = Deno.readFileSync(file)
-} else if (url.protocol.includes('http')) {
-    const wasm_url = import.meta.url.substring(0, import.meta.url.lastIndexOf('/') + 1) + 'bridge_bg.wasm'
-    wasmCode = await (await fetch(wasm_url)).arrayBuffer()
-} else {
-    console.error(`Unsupported protocol: ${url.protocol}`)
-    Deno.exit(0)
+const wasm_url = new URL('bridge_bg.wasm', import.meta.url);
+let wasmCode = '';
+switch (wasm_url.protocol) {
+    case 'file:':
+    wasmCode = await Deno.readFile(wasm_url);
+    break
+    case 'https:':
+    case 'http:':
+    wasmCode = await (await fetch(wasm_url)).arrayBuffer();
+    break
+    default:
+    throw new Error(`Unsupported protocol: ${wasm_url.protocol}`);
+    break
 }
-const wasmModule = new WebAssembly.Module(wasmCode);
-const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+
+const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
 const wasm = wasmInstance.exports;

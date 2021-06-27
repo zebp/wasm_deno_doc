@@ -2,7 +2,7 @@ scripts:
   # We need a custom bindgen because currently wasm-bindgen's deno target doesn't work with http
   # imports.
   install-wasm-bindgen:
-    cmd: cargo install --git https://github.com/zebp/wasm-bindgen wasm-bindgen-cli
+    cmd: cargo install --git https://github.com/rustwasm/wasm-bindgen wasm-bindgen-cli
     env:
       CARGO_INSTALL_ROOT: ./dev-bin
 
