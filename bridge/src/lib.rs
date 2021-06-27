@@ -48,11 +48,14 @@ impl DocFileLoader for FileLoader {
                     })?;
             let tuple = Array::from(&tuple);
 
-            let syntax: JsValue = tuple.get(0);
-            let syntax: Syntax = syntax.into_serde().unwrap();
-
-            let code: JsValue = tuple.get(1);
-            let code = code.as_string().unwrap();
+            let syntax: Syntax = tuple
+                .get(0)
+                .into_serde()
+                .expect("invalid layout of Syntax, use typescript to make this a compile error");
+            let code = tuple
+                .get(1)
+                .as_string()
+                .expect("expected code string, use typescript to make this a compile error");
 
             Ok((syntax, code))
         })
