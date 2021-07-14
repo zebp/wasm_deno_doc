@@ -14,6 +14,14 @@ scripts:
     - cmd: ./dev-bin/bin/wasm-bindgen --no-typescript --target deno --out-dir pkg target/wasm32-unknown-unknown/debug/bridge.wasm
       desc: Generate TypeScript bindings
 
+  build-wasm:release:
+    - cmd: cargo build --target wasm32-unknown-unknown --release
+      desc: Build the wasm binary
+
+      # Use the custom wasm-bindgen to allow for http imports.
+    - cmd: ./dev-bin/bin/wasm-bindgen --no-typescript --target deno --out-dir pkg target/wasm32-unknown-unknown/release/bridge.wasm
+      desc: Generate TypeScript bindings
+
   dev:
     cmd: deno run --allow-read mod.ts
 
